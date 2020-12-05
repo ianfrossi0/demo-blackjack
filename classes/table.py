@@ -2,6 +2,7 @@ import random
 import re
 from .card import Card
 from .hand import Hand
+from .dealer import Dealer
 
 
 class Table:
@@ -10,18 +11,39 @@ class Table:
         self.played_cards = {"Hearts": set(), "Tiles": set(), "Clovers": set(), "Pikes": set()}
         self.player_hands = {}
         self.players = players
+        self.dealer = Dealer()
         
         # Initialize player hands
         for i in range(int(players)):
             self.player_hands[i+1] = Hand()
-            first_card = self.getNewCard()
-            second_card = self.getNewCard()
-            self.player_hands[i+1].addCard(first_card)
-            self.player_hands[i+1].addCard(second_card)
 
-            if (first_card.number == 1 and second_card.number == 10) or\
-                    (first_card.number == 10 and second_card.number == 1):
-                self.player_hands[i+1].natural = True
+        # Deal initial cards. This for will loop ( players + 1 ) * 2 times,
+        # as it will give one card at a time to each player AND the dealer
+        for i in range((int(players)+1)*2):
+            current_card = self.getNewCard()
+
+            # It's the dealer's turn to receive a card
+            if i+1 % players+1 == 0:
+                if i+1 > players+1:
+                    # Second card must be dealt facing down
+                    current_card.visible = False
+                elif current_card.number == 10 or current_card.isAce():
+                    # If the dealer deals a 10 or an ace as his face up card
+                    # they need to check whether they have a natural or not
+                    dealer_may_have_natural = True
+                self.dealer.addCard(current_card)
+            else:
+                self.player_hands[i+1].addCard(current_card)
+
+        for i in range(int(players)):
+            self.player_hands[i+1].natural = self.checkPlayerNatural(i+1)
+
+        if dealer_may_have_natural:
+            self.dealer.hand.natural = self.checkDealerNatural()
+
+        # Finished dealing initial cards, turn second card up
+        self.dealer.hand.cards[1].visible = True
+        self.dealer.checkForStand()
     
     # Generate a new random card
     def getNewCard(self) -> object:
@@ -89,3 +111,17 @@ class Table:
                     if value == '11':
                         card.soft = True
                     print("\n")
+
+    # Check if player has a natural hand on deal
+    def checkPlayerNatural(self, player):
+        return True if (self.player_hands[player].cards[0].isAce() and
+                        self.player_hands[player].cards[0].number == 10) or \
+                       (self.player_hands[player].cards[0].number == 10 and
+                        self.player_hands[player].cards[0].isAce()) else False
+
+    # Check if dealer has a natural hand on deal
+    def checkDealerNatural(self):
+        return True if (self.dealer.cards[0].isAce() and
+                        self.dealer.cards[0].number == 10) or \
+                       (self.dealer.cards[0].number == 10 and
+                        self.dealer.cards[0].isAce()) else False

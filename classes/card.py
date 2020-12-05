@@ -2,6 +2,7 @@ class Card:
     def __init__(self, number, icon):
         self.number = number
         self.icon = icon
+        self.visible = True
         
         # Soft refers to value for an ace
         # A soft ace is valued 11, a hard ace is valued 1

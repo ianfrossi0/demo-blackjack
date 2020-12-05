@@ -1,6 +1,7 @@
 from classes.table import Table
 
 # TODO: ADD DEALER! Check wiki for dealer rules...
+# TODO: ADD COMPARISON OF NATURAL VS DEALER
 # TODO: ADD NATURAL WIN AGAINST PLAYERS / DEALER
 
 # Ask for number of players
@@ -29,7 +30,7 @@ while not table.haveAllPlayersStoodOrBusted():
     else:
         print(f"\nPlayer {current_player} is busted! Skipping to next player...\n")
     
-    # Return to first player
+    # Dealer's turn and return to first player
     if current_player == int(players):
         current_player = 0
         turn += 1

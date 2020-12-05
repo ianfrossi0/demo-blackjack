@@ -12,7 +12,6 @@ class Hand:
     def addCard(self, card):
         if card.number == 1:
             self.contains_ace = True
-        
         self.cards.append(card)
     
     # Return sum of card numbers
