@@ -12,6 +12,7 @@ class Table:
         self.player_hands = {}
         self.players = players
         self.dealer = Dealer()
+        dealer_may_have_natural = False
         
         # Initialize player hands
         for i in range(int(players)):
@@ -23,8 +24,8 @@ class Table:
             current_card = self.getNewCard()
 
             # It's the dealer's turn to receive a card
-            if i+1 % players+1 == 0:
-                if i+1 > players+1:
+            if (i+1) % (int(players)+1) == 0:
+                if i+1 > int(players)+1:
                     # Second card must be dealt facing down
                     current_card.visible = False
                 elif current_card.number == 10 or current_card.isAce():
@@ -33,17 +34,16 @@ class Table:
                     dealer_may_have_natural = True
                 self.dealer.addCard(current_card)
             else:
-                self.player_hands[i+1].addCard(current_card)
+                if i+1 > int(players):
+                    self.player_hands[i-int(players)].addCard(current_card)
+                else:
+                    self.player_hands[i+1].addCard(current_card)
 
         for i in range(int(players)):
             self.player_hands[i+1].natural = self.checkPlayerNatural(i+1)
 
         if dealer_may_have_natural:
             self.dealer.hand.natural = self.checkDealerNatural()
-
-        # Finished dealing initial cards, turn second card up
-        self.dealer.hand.cards[1].visible = True
-        self.dealer.checkForStand()
     
     # Generate a new random card
     def getNewCard(self) -> object:
@@ -64,6 +64,11 @@ class Table:
     def showHand(self, player):
         for card in self.player_hands[player].cards:
             print(card.getString())
+
+    # Show hand of dealer as string
+    def showDealerHand(self):
+        for card in self.dealer.hand.cards:
+            print(card.getString())
     
     # This method will be called from main to interact
     # with a player hand from playerHands dict
@@ -77,6 +82,10 @@ class Table:
     # Calculate player soft score assuming all aces are soft 11
     def getPlayerSoftScore(self, player) -> int:
         return self.player_hands[player].getSoftScore()
+
+    # Return score taking into consideration that the dealer may have to stand on a soft ace
+    def getDealerScore(self) -> int:
+        return self.dealer.hand.getSoftScore() if self.dealer.has_to_soft else self.dealer.hand.getSoftScore()
     
     # Check if played has decided to stand his hand
     def isPlayerStanding(self, player) -> bool:
@@ -93,6 +102,12 @@ class Table:
             if not hand.stand and not hand.busted:
                 return False
         return True
+
+    # Check if the dealer must keep picking up cards
+    def hasDealerStoodOrBusted(self) -> bool:
+        self.dealer.checkForStandOrBust()
+        if self.dealer.hand.stand or self.dealer.hand.busted:
+            return True
     
     # Check whether played is busted
     def isPlayerBusted(self, player) -> bool:
@@ -113,15 +128,22 @@ class Table:
                     print("\n")
 
     # Check if player has a natural hand on deal
-    def checkPlayerNatural(self, player):
+    def checkPlayerNatural(self, player) -> bool:
         return True if (self.player_hands[player].cards[0].isAce() and
                         self.player_hands[player].cards[0].number == 10) or \
                        (self.player_hands[player].cards[0].number == 10 and
                         self.player_hands[player].cards[0].isAce()) else False
 
     # Check if dealer has a natural hand on deal
-    def checkDealerNatural(self):
+    def checkDealerNatural(self) -> bool:
         return True if (self.dealer.cards[0].isAce() and
                         self.dealer.cards[0].number == 10) or \
                        (self.dealer.cards[0].number == 10 and
                         self.dealer.cards[0].isAce()) else False
+
+    # Does any player have a natural?
+    def anyPlayerHasNatural(self) -> bool:
+        for i in range(int(self.players)):
+            if self.checkPlayerNatural(i+1):
+                return True
+        return False

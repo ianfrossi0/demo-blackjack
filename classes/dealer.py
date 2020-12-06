@@ -9,7 +9,7 @@ class Dealer:
     def addCard(self, card):
         self.hand.addCard(card)
 
-    def checkForStand(self):
+    def checkForStandOrBust(self):
         soft_score = self.hand.getSoftScore()
         score = self.hand.getScore()
 
@@ -21,7 +21,13 @@ class Dealer:
                 if 17 <= soft_score <= 21:
                     self.has_to_soft = True
                     self.hand.stand = True
-            else:
-                # If dealer's score is above 16 they must stand
-                if score >= 17:
-                    self.hand.stand = True
+            elif 17 <= score <= 21:
+                # If dealer's score is between 17 and 21 they must stand
+                self.hand.stand = True
+            elif score > 21:
+                # Dealer is busted!
+                self.hand.busted = True
+        else:
+            # Dealer has a natural (ace used as 11 and a 10), must stand
+            self.has_to_soft = True
+            self.hand.stand = True

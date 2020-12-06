@@ -14,31 +14,34 @@ class Card:
     
     # Return card name as string
     def getString(self):
-        if self.number == 1:
-            strval = "Ace"
-        elif self.number == 2:
-            strval = "Two"
-        elif self.number == 3:
-            strval = "Three"
-        elif self.number == 4:
-            strval = "Four"
-        elif self.number == 5:
-            strval = "Five"
-        elif self.number == 6:
-            strval = "Six"
-        elif self.number == 7:
-            strval = "Seven"
-        elif self.number == 8:
-            strval = "Eight"
-        elif self.number == 9:
-            strval = "Nine"
-        elif self.number == 10:
-            strval = "Ten"
-        elif self.number == 11:
-            strval = "Jack"
-        elif self.number == 12:
-            strval = "Queen"
+        if self.visible:
+            if self.number == 1:
+                strval = "Ace"
+            elif self.number == 2:
+                strval = "Two"
+            elif self.number == 3:
+                strval = "Three"
+            elif self.number == 4:
+                strval = "Four"
+            elif self.number == 5:
+                strval = "Five"
+            elif self.number == 6:
+                strval = "Six"
+            elif self.number == 7:
+                strval = "Seven"
+            elif self.number == 8:
+                strval = "Eight"
+            elif self.number == 9:
+                strval = "Nine"
+            elif self.number == 10:
+                strval = "Ten"
+            elif self.number == 11:
+                strval = "Jack"
+            elif self.number == 12:
+                strval = "Queen"
+            else:
+                strval = "King"
+
+            return strval + " of " + self.icon
         else:
-            strval = "King"
-        
-        return strval + " of " + self.icon
+            return "Card facing down"
