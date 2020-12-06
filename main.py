@@ -1,6 +1,5 @@
 from classes.table import Table
 
-# TODO: ADD COMPARISON OF NATURAL VS DEALER
 # TODO: ADD NATURAL WIN AGAINST PLAYERS / DEALER
 
 # Ask for number of players

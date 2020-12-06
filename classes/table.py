@@ -4,6 +4,9 @@ from .card import Card
 from .hand import Hand
 from .dealer import Dealer
 
+# TODO: since players start at index 1, maybe refactor code  \
+#  to allow the dealer to exist at index 0? (may simplify on the long run)
+
 
 class Table:
     def __init__(self, players):
