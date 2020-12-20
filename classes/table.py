@@ -15,68 +15,37 @@ class Table:
         self.bets = dict()  # TODO
         self.players = players
         self.dealer = Dealer()
+        self.dealer_may_have_natural = False
         self.turn = 1
 
         # Initialize players and their hands and add tuple to player_hands list
         for i in range(self.players):
             self.player_hands.append((Player(input(f"\tEnter name for player {i+1}: "), 1500), Hand()))
 
+    # Deal card to player or dealer depending on player parameter
     def deal(self, player):
         current_card = self.get_new_card()
 
         if player != -1:
             self.player_hands[player][1].add_card(current_card)
-        else:
+
+            if len(self.player_hands[player][1].cards) == 2:
+                self.player_hands[player][1].natural = self.check_player_natural(player)
+        else:  # It's the dealer's turn to receive a card
             if len(self.dealer.hand.cards) == 1:
+                # Second card must be dealt facing down
                 current_card.visible = False
+            elif len(self.dealer.hand.cards) == 0 and \
+                    (current_card.number == 10 or current_card.is_ace()):
+                # If the dealer deals a 10 or an ace as his face up card
+                # they need to check whether they have a natural or not
+                self.dealer_may_have_natural = True
             self.dealer.add_card(current_card)
 
+            if self.dealer_may_have_natural:
+                self.dealer.hand.natural = self.check_dealer_natural()
+
         return current_card
-
-    # TODO: REFACTOR
-    def new_deal(self):
-        self.turn = 1
-
-        # Clear hand for new deal
-        for i in range(self.players):
-            self.player_hands[i][1].clear()
-
-        for cards in self.played_cards.values():
-            del cards
-
-        # Deal initial cards. This for will loop ( players + 1 ) * 2 times,
-        # as it will give one card at a time to each player AND the dealer
-        for i in range((self.players+1)*2):
-            current_card = self.get_new_card()
-
-            # It's the dealer's turn to receive a card
-            if (i+1) % (self.players+1) == 0:
-                current_player = -1  # Player -1 is the dealer
-                if i+1 > self.players+1:
-                    # Second card must be dealt facing down
-                    current_card.visible = False
-                elif current_card.number == 10 or current_card.is_ace():
-                    # If the dealer deals a 10 or an ace as his face up card
-                    # they need to check whether they have a natural or not
-                    dealer_may_have_natural = True
-                self.dealer.add_card(current_card)
-            else:
-                if i+1 > self.players:
-                    current_player = i - self.players - 1
-                    current_card_no = 2
-                    self.player_hands[i-self.players-1][1].add_card(current_card)
-                else:
-                    current_player = i
-                    current_card_no = 1
-                    self.player_hands[i][1].add_card(current_card)
-
-            #renderer.render_new_card(current_card, current_player, current_card_no)
-
-        for i in range(self.players):
-            self.player_hands[i][1].natural = self.check_player_natural(i)
-
-        if dealer_may_have_natural:
-            self.dealer.hand.natural = self.check_dealer_natural()
 
     # Check whether all players and dealer have received their initial deal
     def finished_dealing(self) -> bool:
@@ -84,6 +53,17 @@ class Table:
             if len(p[1].cards) < 2:
                 return False
         return len(self.dealer.hand.cards) >= 2
+
+    # Check whether player still needs cards
+    def up_for_initial_deal(self, player) -> bool:
+        return True if self.get_card_count(player) < 2 else False
+
+    # Return card count of player or dealer
+    def get_card_count(self, player) -> int:
+        if player != -1:  # Check player
+            return self.player_hands[player][1].get_card_count()
+        else:  # Check dealer
+            return self.dealer.hand.get_card_count() - 1
     
     # Generate a new random card
     def get_new_card(self) -> object:

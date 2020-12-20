@@ -3,8 +3,6 @@ from classes.game import Game
 
 Game().start()
 
-# TODO: REFACTOR NEW_DEAL TO WORK WITH THE UPDATE FUNCTION FROM GAME, MAYBE EVEN MOVE THE RENDER NEW CARD \
-#       FUNCTION CALL TO GAME.PY?? WILL HAVE TO CHECK HOW TO DO IT PROPERLY
 # TODO: ADD NATURAL WIN AGAINST PLAYERS / DEALER
 
 # Pretend everything under this comment does not exist
@@ -66,7 +64,7 @@ if not table.dealer.hand.natural and not table.any_player_has_natural():
                 table.dealer.hand.add_card(table.get_new_card())
             print(f"\n\nHand for dealer ({table.dealer.hand.get_score()})\n")
             table.show_dealer_hand()
-        print("\n_____________________________________________________________________________")
+        print("\n_____________________________________________________________________________\n\n")
 elif table.dealer.hand.natural:
     # Dealer has a natural, check against every single player if they also have one
     print("\n\nDealer has a natural! All players that do not have one must pay up their bet!\n")

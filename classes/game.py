@@ -7,7 +7,7 @@ class Game:
     # Game main loop
     @staticmethod
     def start():
-        print("\n_____________________________________________________________________________")
+        print(HORIZONTAL_LINE)
         print("\nInitializing pygame... ", end='')
         pygame.init()
         clock = pygame.time.Clock()  # TODO: check what this is for
@@ -18,7 +18,6 @@ class Game:
         current_player = 0
         new_deal = True  # New initial deal
         turn_end = False  # Marks end of player turn
-        dealer_may_have_natural = False  # Dealer got a 10 or ace in their initial deal
         time_last_action = 0  # Cooldown between actions
         print("OK!\n")
 
@@ -30,33 +29,46 @@ class Game:
         renderer = Renderer()
         print("Renderer initialized OK!\n")
 
+        print("\nDrawing table... ")
         # NOTE: Using (SCREEN_WIDTH/HEIGHT - IMG_SIZE) / 2 as X or Y positioning
         # will perfectly center the surface on the screen
         renderer.render(TABLE, ((SCREEN_WIDTH - 1392) / 2, 0))
         renderer.render(renderer.UPSIDE_DOWN_CARD, (CARD_SCREEN_CENTER_X - 170, 20))
+        print("OK!\n")
 
-        print("Start running game")
+        print(HORIZONTAL_LINE)
+        print(f"\n\nGame starting.\n\tRunning with a resolution of {SCREEN_WIDTH}x{SCREEN_HEIGHT} "
+              f"(current scale is {SCALE[0]:.2f} horizontal and {SCALE[1]:.2f} vertical)."
+              f"\n\t{ACTION_COOLDOWN}ms of cooldown between actions\n")
+        print(HORIZONTAL_LINE)
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     print("\nQuitting...")
                     pygame.quit()
+                if event.type == pygame.KEYDOWN:  # TODO: Implement movement... and buttons to move through
+                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                        print("You are going left!")
+                    if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                        print("You are going right!")
+                    if event.key == pygame.K_UP or event.key == pygame.K_w:
+                        print("You are going up!")
+                    if event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                        print("You are going down!")
+                    if event.key == pygame.K_SPACE:
+                        print("You are going to space!")
 
             time_now = pygame.time.get_ticks()
 
             # Check if enough time has passed between last action and now
             if time_now - time_last_action >= ACTION_COOLDOWN:
                 if new_deal:  # Dealing initial two cards
-                    if current_player == -1:  # Dealer's turn
-                        ok_for_deal = True if len(table.dealer.hand.cards) < 2 else False
-                        card_number = len(table.dealer.hand.cards)
-                    else:  # Player's turn
-                        ok_for_deal = True if len(table.player_hands[current_player][1].cards) < 2 else False
-                        card_number = len(table.player_hands[current_player][1].cards) + 1
+                    if table.get_card_count(0) == 0:
+                        print("Start dealing initial hand...")
 
-                    if ok_for_deal:  # Dealer or player must receive card
+                    if table.up_for_initial_deal(current_player):  # Dealer or player must receive card
                         card = table.deal(current_player)
-                        renderer.render_new_card(card, current_player, card_number)
+                        renderer.render_new_card(card, current_player, table.get_card_count(current_player))
                         turn_end = True
                         time_last_action = pygame.time.get_ticks()
 

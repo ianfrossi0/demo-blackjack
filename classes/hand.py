@@ -16,6 +16,10 @@ class Hand:
         if card.number == 1:
             self.contains_ace = True
         self.cards.append(card)
+
+    # Return how many cards this hand has
+    def get_card_count(self):
+        return len(self.cards)
     
     # Return sum of card numbers
     def get_score(self) -> int:

@@ -18,7 +18,7 @@ class Renderer:
                                                        (int(CARD_WIDTH * SCALE[0]) // 100,
                                                         int(CARD_HEIGHT * SCALE[1]) // 60))
 
-    # Get corresponding card image and render it.
+    # Get corresponding card image and render it
     def render_new_card(self, card, player, card_number=0):
         card_image = self.get_card_image(card)
 
@@ -72,7 +72,7 @@ class Renderer:
 
         self.render(card_image, (x, y), r)
 
-        print(f"Card printed for player {player + 1} at {(x, y)} with rotation {r}°\n")
+        print(f"\tCard printed for player {player + 1} at {(x, y)} with rotation {r}°")
 
     # Render a surface on a given position and rotation
     def render(self, surface, position, rotation=0):
