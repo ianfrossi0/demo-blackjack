@@ -7,15 +7,18 @@ class Hand:
         self.busted = False
         self.contains_ace = False
         self.natural = False
-    
+
+    def clear(self):
+        self.cards.clear()
+
     # Add a card to this hand
-    def addCard(self, card):
+    def add_card(self, card):
         if card.number == 1:
             self.contains_ace = True
         self.cards.append(card)
     
     # Return sum of card numbers
-    def getScore(self) -> int:
+    def get_score(self) -> int:
         score = 0
         for card in self.cards:
             score += card.number
@@ -26,7 +29,7 @@ class Hand:
         return score
     
     # Return sum of card numbers (aces are valued 11)
-    def getSoftScore(self) -> int:
+    def get_soft_score(self) -> int:
         score = 0
         for card in self.cards:            
             if card.number == 1:

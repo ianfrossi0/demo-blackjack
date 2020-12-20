@@ -9,39 +9,39 @@ class Card:
         self.soft = False
     
     # Returns whether this card is an ace or not
-    def isAce(self) -> bool:
+    def is_ace(self) -> bool:
         return True if self.number == 1 else False
     
     # Return card name as string
-    def getString(self):
+    def get_string(self):
         if self.visible:
             if self.number == 1:
-                strval = "Ace"
+                str_val = "ace"
             elif self.number == 2:
-                strval = "Two"
+                str_val = "two"
             elif self.number == 3:
-                strval = "Three"
+                str_val = "three"
             elif self.number == 4:
-                strval = "Four"
+                str_val = "four"
             elif self.number == 5:
-                strval = "Five"
+                str_val = "five"
             elif self.number == 6:
-                strval = "Six"
+                str_val = "six"
             elif self.number == 7:
-                strval = "Seven"
+                str_val = "seven"
             elif self.number == 8:
-                strval = "Eight"
+                str_val = "eight"
             elif self.number == 9:
-                strval = "Nine"
+                str_val = "nine"
             elif self.number == 10:
-                strval = "Ten"
+                str_val = "ten"
             elif self.number == 11:
-                strval = "Jack"
+                str_val = "jack"
             elif self.number == 12:
-                strval = "Queen"
+                str_val = "queen"
             else:
-                strval = "King"
+                str_val = "king"
 
-            return strval + " of " + self.icon
+            return str_val + "_of_" + self.icon
         else:
-            return "Card facing down"
+            return "card_facing_down"

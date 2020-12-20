@@ -6,12 +6,12 @@ class Dealer:
         self.hand = Hand()
         self.has_to_soft = False
 
-    def addCard(self, card):
-        self.hand.addCard(card)
+    def add_card(self, card):
+        self.hand.add_card(card)
 
-    def checkForStandOrBust(self):
-        soft_score = self.hand.getSoftScore()
-        score = self.hand.getScore()
+    def check_for_stand_or_bust(self):
+        soft_score = self.hand.get_soft_score()
+        score = self.hand.get_score()
 
         if not self.hand.natural:
             # Check if dealer has an ace
