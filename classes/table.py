@@ -26,24 +26,25 @@ class Table:
     def deal(self, player):
         current_card = self.get_new_card()
 
-        if player != -1:
-            self.player_hands[player][1].add_card(current_card)
+        if current_card is not None:
+            if player != -1:
+                self.player_hands[player][1].add_card(current_card)
 
-            if len(self.player_hands[player][1].cards) == 2:
-                self.player_hands[player][1].natural = self.check_player_natural(player)
-        else:  # It's the dealer's turn to receive a card
-            if len(self.dealer.hand.cards) == 1:
-                # Second card must be dealt facing down
-                current_card.visible = False
-            elif len(self.dealer.hand.cards) == 0 and \
-                    (current_card.number == 10 or current_card.is_ace()):
-                # If the dealer deals a 10 or an ace as his face up card
-                # they need to check whether they have a natural or not
-                self.dealer_may_have_natural = True
-            self.dealer.add_card(current_card)
+                if len(self.player_hands[player][1].cards) == 2:
+                    self.player_hands[player][1].natural = self.check_player_natural(player)
+            else:  # It's the dealer's turn to receive a card
+                if len(self.dealer.hand.cards) == 1:
+                    # Second card must be dealt facing down
+                    current_card.visible = False
+                elif len(self.dealer.hand.cards) == 0 and \
+                        (current_card.number == 10 or current_card.is_ace()):
+                    # If the dealer deals a 10 or an ace as his face up card
+                    # they need to check whether they have a natural or not
+                    self.dealer_may_have_natural = True
+                self.dealer.add_card(current_card)
 
-            if self.dealer_may_have_natural:
-                self.dealer.hand.natural = self.check_dealer_natural()
+                if self.dealer_may_have_natural:
+                    self.dealer.hand.natural = self.check_dealer_natural()
 
         return current_card
 
@@ -67,14 +68,18 @@ class Table:
     
     # Generate a new random card
     def get_new_card(self) -> object:
+        if len(self.played_cards['Pikes']) + len(self.played_cards['Hearts']) + \
+                len(self.played_cards['Tiles']) + len(self.played_cards['Clovers']) == 51:
+            return None  # No more cards available in deck!
+
         # Generate random card
         new_card = Card(random.randint(1, 13), ICONS[random.randint(0, 3)])
-        
+
         # Keep generating new cards if they have already
         # been withdrawn from the deck
         while new_card.number in self.played_cards[new_card.icon]:
             new_card = Card(random.randint(1, 13), ICONS[random.randint(0, 3)])
-        
+
         # Add card to withdrawn stack
         self.played_cards[new_card.icon].add(new_card.number)
         

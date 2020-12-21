@@ -1,11 +1,13 @@
 from .constants import *
 import math
+import random
 from .card import Card
 
 
 class Renderer:
     def __init__(self):
         self.screen = self.__initialize_screen()
+        self.global_font = pygame.font.SysFont(BAHNSCHRIFT, FONT_SIZE)
 
         # Dummy card with number 3 as the 3rd image in the
         # fourth row is the upside-down card
@@ -50,8 +52,8 @@ class Renderer:
                     y += card_number * 10
                     x += card_number * 10
                 else:
-                    y -= card_number * 10
-                    x += card_number * 10
+                    y -= card_number * 12
+                    x += card_number * 12
 
             # Since cards should be angled towards the deck, calculate
             # and get the distance between current card and deck
@@ -66,8 +68,8 @@ class Renderer:
             if player < 2:
                 r *= -1
         else:  # Dealer's turn
-            x = CARD_SCREEN_CENTER_X + CARD_WIDTH * card_number
-            y = 20
+            x = CARD_SCREEN_CENTER_X + CARD_WIDTH * card_number if card_number < 2 else CARD_SCREEN_CENTER_X
+            y = 20 if card_number < 2 else (CARD_HEIGHT * card_number)/10
             r = 0
 
         self.render(card_image, (x, y), r)
@@ -79,7 +81,6 @@ class Renderer:
         if rotation != 0:
             surface = pygame.transform.rotate(surface, rotation)
         self.screen.blit(surface, position)
-        pygame.display.update()
 
     # Get the surface (sprite) of a desired card from sheet
     def get_card_image(self, card) -> object:
@@ -98,12 +99,23 @@ class Renderer:
         print(f"\t\tWindowed screen size: {SCREEN_WIDTH}x{SCREEN_HEIGHT}")
         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # , pygame.FULLSCREEN)
         pygame.display.set_caption("Blackjack - Testing...")
-        screen.fill((103, 0, 0))  # Fill screen with dark red, maybe change it later?
+        screen.fill(DARK_RED)  # Fill screen with dark red, maybe change it later?
 
         print(f"\t\tImages folder is {IMG_PATH}")
         pygame.display.set_icon(pygame.image.load(os.path.join(IMG_PATH, "logo.png")))
         print("\tScreen initialized OK!")
         return screen
+
+    # Render option buttons
+    def render_button(self, color, x, y, width, height, text=""):
+        pygame.draw.rect(self.screen, color, (x, y, width, height))
+        text_surface = self.global_font.render(text, False, WHITE)
+        self.render(text_surface, (x + int(x/5), y + int(y/50)))
+
+    # Render rectangle outline
+    def render_option(self, x, y):
+        for i in range(4):
+            pygame.draw.rect(self.screen, DARK_LIME, (x, y, 150, 60), 1)
 
     # Get row of card based on icon
     @staticmethod
@@ -119,3 +131,9 @@ class Renderer:
         else:  # Card is upside-down
             value = 4
         return value
+
+    # Update function
+    def update(self, clock=None):
+        pygame.display.flip()
+        if clock is not None:
+            clock.tick(FPS)
