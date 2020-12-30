@@ -1,6 +1,5 @@
 from .constants import *
 import math
-import random
 from .card import Card
 
 
@@ -9,8 +8,8 @@ class Renderer:
         self.screen = self.__initialize_screen()
         self.global_font = pygame.font.SysFont(BAHNSCHRIFT, FONT_SIZE)
 
-        # Dummy card with number 3 as the 3rd image in the
-        # fourth row is the upside-down card
+        # Dummy card with number 3. The 3rd image in the
+        # fourth row of the sprite sheet is the upside-down card
         deck_image = Card(3, "dummy")
         deck_image.visible = False
         self.UPSIDE_DOWN_CARD = self.get_card_image(deck_image)

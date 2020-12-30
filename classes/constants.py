@@ -11,6 +11,9 @@ IMG_PATH = os.path.join("img")
 CARD_WIDTH = 167.5
 CARD_HEIGHT = 243
 SCALE = (SCREEN_WIDTH * 0.035, SCREEN_HEIGHT * 0.035)  # Will have to check if the float value is okay
+
+# NOTE: Using (SCREEN_WIDTH/HEIGHT - IMG_SIZE) / 2 as X
+# or Y position will perfectly center the surface on the screen
 CARD_SCREEN_CENTER_X = ((SCREEN_WIDTH - (CARD_WIDTH * SCALE[0] // 100)) / 2)
 CARD_SCREEN_CENTER_Y = ((SCREEN_HEIGHT - (CARD_HEIGHT * SCALE[1] // 100)) / 2)
 BAHNSCHRIFT = 'Bahnschrift SemiLight'

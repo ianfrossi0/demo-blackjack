@@ -33,8 +33,7 @@ class Table:
                 if len(self.player_hands[player][1].cards) == 2:
                     self.player_hands[player][1].natural = self.check_player_natural(player)
             else:  # It's the dealer's turn to receive a card
-                if len(self.dealer.hand.cards) == 1:
-                    # Second card must be dealt facing down
+                if len(self.dealer.hand.cards) == 1:  # Second card must be dealt facing down
                     current_card.visible = False
                 elif len(self.dealer.hand.cards) == 0 and \
                         (current_card.number == 10 or current_card.is_ace()):
@@ -65,7 +64,7 @@ class Table:
             return self.player_hands[player][1].get_card_count()
         else:  # Check dealer
             return self.dealer.hand.get_card_count() - 1
-    
+
     # Generate a new random card
     def get_new_card(self) -> object:
         if len(self.played_cards['Pikes']) + len(self.played_cards['Hearts']) + \
@@ -85,65 +84,57 @@ class Table:
         
         return new_card
     
-    # Show hand of player as string
-    def show_hand(self, player):
-        for card in self.player_hands[player][1].cards:
-            print(card.get_string())
-
-    # Show hand of dealer as string
-    def show_dealer_hand(self):
-        for card in self.dealer.hand.cards:
-            print(card.get_string())
-    
-    # This method will be called from main to interact
-    # with a player hand from playerHands dict
-    def add_card(self, player):
-        self.player_hands[player][1].add_card(self.get_new_card())
-    
     # Calculate player score based on cards on hand
     def get_player_score(self, player) -> int:
-        return self.player_hands[player][1].get_score()
-    
+        if player != -1:
+            return self.player_hands[player][1].get_score()
+        else:
+            # Return score taking into consideration that the dealer may have to stand on a soft ace
+            return self.dealer.hand.get_soft_score() if self.dealer.has_to_soft else self.dealer.hand.get_soft_score()
+
     # Calculate player soft score assuming all aces are soft 11
     def get_player_soft_score(self, player) -> int:
         return self.player_hands[player][1].get_soft_score()
-
-    # Return score taking into consideration that the dealer may have to stand on a soft ace
-    def get_dealer_score(self) -> int:
-        return self.dealer.hand.get_soft_score() if self.dealer.has_to_soft else self.dealer.hand.get_soft_score()
     
     # Check if played has decided to stand his hand
     def is_player_standing(self, player) -> bool:
-        return self.player_hands[player][1].stand
-    
+        if player != -1:
+            return self.player_hands[player][1].stand
+        else:
+            self.dealer.check_for_stand_or_bust()
+            return self.dealer.hand.stand
+
     # Player has decided to stay. Set stand to True
     def player_stand(self, player):
-        self.player_hands[player][1].stand = True
-    
-    # Check whether all players have decided to
-    # stay or are busted
+        if player != -1:
+            self.player_hands[player][1].stand = True
+        else:
+            self.dealer.hand.stand = True
+
+    # Check whether all players have decided to stay or are busted
     def have_all_players_stood_or_busted(self) -> bool:
+        # Check if a player is still playing
         for i in range(self.players):
             if not self.player_hands[i][1].stand and not self.player_hands[i][1].busted:
                 return False
-        return True
 
-    # Check if the dealer must keep picking up cards
-    def has_dealer_stood_or_busted(self) -> bool:
+        # Check if dealer is still playing
         self.dealer.check_for_stand_or_bust()
-        if self.dealer.hand.stand or self.dealer.hand.busted:
-            return True
+        if not self.dealer.hand.stand and not self.dealer.hand.stand:
+            return False
+
+        return True  # No one is playing
     
     # Check whether played is busted
     def is_player_busted(self, player) -> bool:
-        if self.get_player_score(player) > 21:
-            self.player_hands[player][1].busted = True
-        return self.player_hands[player][1].busted
+        if player != -1:
+            if self.get_player_score(player) > 21:
+                self.player_hands[player][1].busted = True
+            return self.player_hands[player][1].busted
+        else:
+            self.dealer.check_for_stand_or_bust()
+            return self.dealer.hand.busted
 
-    # Check whether dealer is busted
-    def is_dealer_busted(self) -> bool:
-        return self.dealer.hand.busted
-    
     # Ask to player if their aces are soft
     def assign_value_to_aces(self, player):
         if self.player_hands[player][1].contains_ace:
