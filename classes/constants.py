@@ -17,7 +17,9 @@ SCALE = (SCREEN_WIDTH * 0.035, SCREEN_HEIGHT * 0.035)  # Will have to check if t
 CARD_SCREEN_CENTER_X = ((SCREEN_WIDTH - (CARD_WIDTH * SCALE[0] // 100)) / 2)
 CARD_SCREEN_CENTER_Y = ((SCREEN_HEIGHT - (CARD_HEIGHT * SCALE[1] // 100)) / 2)
 BAHNSCHRIFT = 'Bahnschrift SemiLight'
-FONT_SIZE = int(SCALE[0])
+FONT_SIZE_BIG = int(SCALE[0])
+FONT_SIZE_MID = int(SCALE[0]-0.25*SCALE[0])
+FONT_SIZE_SMALL = int(SCALE[0]-0.5*SCALE[0])
 
 # Colors
 BLACK = (0, 0, 0)
@@ -28,6 +30,7 @@ WHITE = (255, 255, 255)
 
 # Game relevant constants
 ACTION_COOLDOWN = 500  # 0.5s
+ENTRY_BET = 200
 MOVEMENT_KEYS = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN,
                  pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s, pygame.K_SPACE]
 FPS = 60

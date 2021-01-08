@@ -6,7 +6,10 @@ from .card import Card
 class Renderer:
     def __init__(self):
         self.screen = self.__initialize_screen()
-        self.global_font = pygame.font.SysFont(BAHNSCHRIFT, FONT_SIZE)
+
+        self.font_size = {'S': pygame.font.SysFont(BAHNSCHRIFT, FONT_SIZE_SMALL),
+                          'M': pygame.font.SysFont(BAHNSCHRIFT, FONT_SIZE_MID),
+                          'B': pygame.font.SysFont(BAHNSCHRIFT, FONT_SIZE_BIG)}
 
         # Dummy card with number 3. The 3rd image in the
         # fourth row of the sprite sheet is the upside-down card
@@ -60,7 +63,7 @@ class Renderer:
 
             # In order to get the correct rotation, apply the following formula:
             # r = 90 - the absolute value of tan^-1(h/x) evaluated in degrees
-            r = 90 - abs(math.degrees(math.atan(distance[1]/distance[0])))
+            r = 90 - abs(math.degrees(math.atan(distance[1] / distance[0])))
 
             # This players' cards will be on the left
             # side of the table, must flip the angle
@@ -68,7 +71,7 @@ class Renderer:
                 r *= -1
         else:  # Dealer's turn
             x = CARD_SCREEN_CENTER_X + CARD_WIDTH * card_number if card_number < 2 else CARD_SCREEN_CENTER_X
-            y = 20 if card_number < 2 else (CARD_HEIGHT * card_number)/10
+            y = 20 if card_number < 2 else (CARD_HEIGHT * card_number) / 10
             r = 0
 
         self.render(card_image, (x, y), r)
@@ -94,22 +97,25 @@ class Renderer:
     # Get screen size and initialize screen
     @staticmethod
     def __initialize_screen() -> object:
-        print("\tInitializing screen... ")
-        print(f"\t\tWindowed screen size: {SCREEN_WIDTH}x{SCREEN_HEIGHT}")
+        print("\t[AUTO] Initializing screen... ")
+        print(f"\t\t[AUTO] Windowed screen size: {SCREEN_WIDTH}x{SCREEN_HEIGHT}")
         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # , pygame.FULLSCREEN)
         pygame.display.set_caption("Blackjack - Testing...")
         screen.fill(DARK_RED)  # Fill screen with dark red, maybe change it later?
 
-        print(f"\t\tImages folder is {IMG_PATH}")
+        print(f"\t\t[AUTO] Images folder is '{IMG_PATH}'")
         pygame.display.set_icon(pygame.image.load(os.path.join(IMG_PATH, "logo.png")))
-        print("\tScreen initialized OK!")
+        print("\t[AUTO] Screen initialized OK!")
         return screen
 
     # Render option buttons
-    def render_button(self, color, x, y, width, height, text=""):
+    def render_button(self, color, x, y, width, height, text="", font_size="B"):
         pygame.draw.rect(self.screen, color, (x, y, width, height))
-        text_surface = self.global_font.render(text, False, WHITE)
+        text_surface = self.get_text_surface(text, WHITE, font_size)
         self.render(text_surface, (x + int(x/5), y + int(y/50)))
+
+    def get_text_surface(self, text, color, size="B"):
+        return self.font_size[size].render(text, False, color)
 
     # Render rectangle outline
     def render_option(self, x, y):

@@ -5,7 +5,6 @@ class Hand:
         self.cards = []
         self.stand = False
         self.busted = False
-        self.contains_ace = False
         self.natural = False
 
     def clear(self):
@@ -13,8 +12,6 @@ class Hand:
 
     # Add a card to this hand
     def add_card(self, card):
-        if card.number == 1:
-            self.contains_ace = True
         self.cards.append(card)
 
     # Return how many cards this hand has
@@ -34,10 +31,15 @@ class Hand:
     
     # Return sum of card numbers (aces are valued 11)
     def get_soft_score(self) -> int:
+        # Since using two aces as a soft ace results in
+        # a score of 22, only the first ace is used as a
+        # soft card, the rest are used as hard aces, valuing 1
         score = 0
+        use_as_soft_ace = True
         for card in self.cards:            
-            if card.number == 1:
+            if card.is_ace() and use_as_soft_ace:
                 score += 11
+                use_as_soft_ace = False
             else:
                 score += card.number
         return score
