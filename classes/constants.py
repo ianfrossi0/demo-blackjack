@@ -1,18 +1,17 @@
 import pygame
 import os
 import tkinter
-import pyautogui
+import screeninfo
 
 #root = tkinter.Tk()
 #get_curr_screen_geometry()
 #root.withdraw()
 
-
-#window = pyautogui.getWindow(0)
+window = screeninfo.get_monitors()[0]
 
 # Graphic relevant constants
-SCREEN_WIDTH = pyautogui.size()[0]
-SCREEN_HEIGHT = pyautogui.size()[1]
+SCREEN_WIDTH = window.width
+SCREEN_HEIGHT = window.height
 IMG_PATH = os.path.join("img")
 CARD_WIDTH = 167.5
 CARD_HEIGHT = 243
