@@ -1,12 +1,18 @@
 import pygame
 import os
 import tkinter
+import pyautogui
 
-root = tkinter.Tk()
+#root = tkinter.Tk()
+#get_curr_screen_geometry()
+#root.withdraw()
+
+
+#window = pyautogui.getWindow(0)
 
 # Graphic relevant constants
-SCREEN_WIDTH = root.winfo_screenwidth()
-SCREEN_HEIGHT = root.winfo_screenheight()
+SCREEN_WIDTH = pyautogui.size()[0]
+SCREEN_HEIGHT = pyautogui.size()[1]
 IMG_PATH = os.path.join("img")
 CARD_WIDTH = 167.5
 CARD_HEIGHT = 243
@@ -40,3 +46,5 @@ ICONS = ["Hearts", "Tiles", "Clovers", "Pikes"]
 
 # Print relevant constants
 HORIZONTAL_LINE = "\n___________________________________________________________________________________\n"
+
+
