@@ -11,6 +11,9 @@ class Renderer:
                           'M': pygame.font.SysFont(BAHNSCHRIFT, FONT_SIZE_MID),
                           'B': pygame.font.SysFont(BAHNSCHRIFT, FONT_SIZE_BIG)}
 
+        # Dictionary to save rotation for cards for each player to avoid calculating it on each turn
+        self.player_rotation = dict()
+
         # Dummy card with number 3. The 3rd image in the
         # fourth row of the sprite sheet is the upside-down card
         deck_image = Card(3, "dummy")
@@ -32,23 +35,22 @@ class Renderer:
                                              int(CARD_HEIGHT * SCALE[1]) // 60))
 
         if player > -1:  # This is a player's turn
-            # This formula should return the following:
-            # Player = 1 -> y = 250
-            # Player = 2 -> y = 500
-            # Player = 3 -> y = 500
-            # Player = 4 -> y = 250
-            y = -125 * (player + 1) ** 2 + 625 * (player + 1) - 250
+            # Will need to check if this scales with screen size properly
+            y = TABLE.get_height()/3.4 if player == 0 or player == 3 else TABLE.get_height()/1.7
 
-            # This formula should return the following:
-            # Player = 1 -> 250
-            # Player = 2 -> 520
-            # Player = 3 -> 880
-            # Player = 4 -> 1140 (using a slight correction)
-            x = int(45 * (player + 1) ** 2 + 135 * (player + 1) + 70) - int(player / 3) * 190
+            # Will need to check if this if/elif statement can be reduced to a single formula
+            # Also will need to check if this scales with screen size properly
+            if player == 0:
+                x = SCREEN_WIDTH / 2 - TABLE.get_width() / 2.5
+            elif player == 1:
+                x = SCREEN_WIDTH / 2 - TABLE.get_width() / 5
+            elif player == 2:
+                x = SCREEN_WIDTH / 2 + TABLE.get_width() / 12
+            elif player == 3:
+                x = SCREEN_WIDTH / 2 + TABLE.get_width() / 4
 
-            # When player is on the left side, the second card onwards
-            # will be stacking slightly to the right. Do the opposite
-            # for players on the right side of the table
+            # When player is on the left side, the second card onwards will be stacking
+            # slightly to the right. Do the opposite for players on the right side of the table
             if card_number > 1:
                 if player < 2:
                     y += card_number * 10
@@ -63,7 +65,9 @@ class Renderer:
 
             # In order to get the correct rotation, apply the following formula:
             # r = 90 - the absolute value of tan^-1(h/x) evaluated in degrees
-            r = 90 - abs(math.degrees(math.atan(distance[1] / distance[0])))
+            if player not in self.player_rotation.keys():
+                self.player_rotation[player] = 90 - abs(math.degrees(math.atan(distance[1] / distance[0])))
+            r = self.player_rotation[player]
 
             # This players' cards will be on the left
             # side of the table, must flip the angle
@@ -113,6 +117,10 @@ class Renderer:
         pygame.draw.rect(self.screen, color, (x, y, width, height))
         text_surface = self.get_text_surface(text, WHITE, font_size)
         self.render(text_surface, (x + int(x/5), y + int(y/50)))
+
+    def render_text(self, text, color, x, y, size="B"):
+        text_surface = self.get_text_surface(text, color, size)
+        self.render(text_surface, (x, y))
 
     def get_text_surface(self, text, color, size="B"):
         return self.font_size[size].render(text, False, color)

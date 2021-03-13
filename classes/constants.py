@@ -1,11 +1,6 @@
 import pygame
 import os
-import tkinter
 import screeninfo
-
-#root = tkinter.Tk()
-#get_curr_screen_geometry()
-#root.withdraw()
 
 window = screeninfo.get_monitors()[0]
 
@@ -22,7 +17,7 @@ SCALE = (SCREEN_WIDTH * 0.035, SCREEN_HEIGHT * 0.035)  # Will have to check if t
 CARD_SCREEN_CENTER_X = ((SCREEN_WIDTH - (CARD_WIDTH * SCALE[0] // 100)) / 2)
 CARD_SCREEN_CENTER_Y = ((SCREEN_HEIGHT - (CARD_HEIGHT * SCALE[1] // 100)) / 2)
 BAHNSCHRIFT = 'Bahnschrift SemiLight'
-FONT_SIZE_BIG = int(SCALE[0])
+FONT_SIZE_BIG = int(SCALE[0]-0.15*SCALE[0])
 FONT_SIZE_MID = int(SCALE[0]-0.25*SCALE[0])
 FONT_SIZE_SMALL = int(SCALE[0]-0.5*SCALE[0])
 

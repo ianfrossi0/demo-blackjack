@@ -142,7 +142,6 @@ class Game:
                                         player_choice_selected = True
                                         print(not self.table.dealer.hand.stand and not self.table.dealer.hand.busted)
                                         print(self.table.get_player_score(-1))
-
                                     turn_initiated = True
 
                                 if player_choice_selected:  # Player pressed the spacebar on a button
